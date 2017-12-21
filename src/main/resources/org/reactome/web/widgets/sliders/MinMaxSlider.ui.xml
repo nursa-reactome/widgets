@@ -1,0 +1,23 @@
+ <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'>
+   <table class="min-max-slider-table">
+    <tbody>
+      <tr class="min-max-slider-input-row">
+        <td>
+          <label>Min</label>
+          <input ui:field="min" type="number">
+          </input>
+        </td>
+        <td>
+          <label>Max</label>
+          <input ui:field="max" type="number">
+          </input>
+        </td>
+      </tr>
+      <tr>
+        <td ui:field="slider" colspan="2">
+          <!-- The slider is dynamically appended here. -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</ui:UiBinder>

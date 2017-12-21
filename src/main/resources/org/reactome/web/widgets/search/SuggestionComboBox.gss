@@ -1,0 +1,29 @@
+.main {
+  background-color: rgba(250, 250, 250, 0.8);
+  border: 1px none;
+  border-radius: 5px;
+  position: relative;
+  margin: 5px 0 0 5px;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  outline: none;
+  -webkit-box-shadow: 3px 3px 5px 0 rgba(50, 50, 50, 0.75);
+  -moz-box-shadow: 3px 3px 5px 0 rgba(50, 50, 50, 0.75);
+  box-shadow: 3px 3px 5px 0 rgba(50, 50, 50, 0.75);
+  -webkit-transition: height 0.2s;
+  -moz-transition: height 0.2s;
+  transition: height 0.2s;
+  font-family: 'Arial Unicode MS',Arial,sans-serif !important;
+  font-size: small;
+}
+
+.input {
+}
+
+.list {
+    margin-top: 4px;
+}
+
+.pager {
+    height: 2em;
+}

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.reactome.web</groupId>
+    <artifactId>widgets</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.1</version>
+    <name>Reactome Widgets</name>
+
+    <description>
+        Utility widgets
+    </description>
+
+    <organization>
+        <name>The European Bioinformatics Institute</name>
+        <url>http://www.ebi.ac.uk/</url>
+    </organization>
+
+    <developers>
+       <developer>
+            <id>loneyf</id>
+            <name>Fred Loney</name>
+            <email>loneyf@ohsu.edu</email>
+            <organization>http://www.ohsu.edu/</organization>
+        </developer>
+        <developer>
+            <id>guw</id>
+            <name>Guanming Wu</name>
+            <email>guw@ohsu.edu</email>
+            <organization>http://www.ohsu.edu/</organization>
+        </developer>
+    </developers>
+
+    <properties>
+        <!-- Name that will be used to generate the jar file -->
+        <fileName>Widgets</fileName>
+
+        <!-- Convenience property to set the GWT version -->
+        <gwtVersion>2.8.1</gwtVersion>
+        <gwtStyle>OBF</gwtStyle> <!-- OBF | PRETTY | DETAILED -->
+
+        <!-- GWT needs at least java 1.8 -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <appModule>org.reactome.web.Widgets</appModule>
+        <appName>${appModule}</appName>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.gwt</groupId>
+                <artifactId>gwt</artifactId>
+                <version>${gwtVersion}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-codeserver</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+        </dependency>
+ 
+        <!-- logging dependencies, delegate all to slf4j and use logback -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.22</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.22</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fusesource.restygwt</groupId>
+            <artifactId>restygwt</artifactId>
+            <version>2.2.1</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>gwt-jackson-parent</artifactId>
+                    <groupId>com.github.nmorel.gwtjackson</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <artifactId>gwt-jackson</artifactId>
+            <groupId>com.github.nmorel.gwtjackson</groupId>
+            <version>0.14.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- Compile classes directly into the webapp, so that IDEs and
+              "mvn process-classes" update them in DevMode -->
+        <outputDirectory>
+            ${project.build.directory}/${project.build.finalName}/WEB-INF/classes
+        </outputDirectory>
+        <finalName>${fileName}-${project.version}</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>net.ltgt.gwt.maven</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>1.0-rc-6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>import-sources</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <moduleName>${appModule}</moduleName>
+                    <moduleShortName>${appName}</moduleShortName>
+                    <failOnError>true</failOnError>
+                    <compilerArgs>
+                        <arg>-compileReport</arg>
+                        <arg>-XcompilerMetrics</arg>
+                        <arg>-optimize</arg>
+                        <arg>9</arg>
+                        <arg>-style</arg>
+                        <arg>${gwtStyle}</arg>
+                    </compilerArgs>
+                    <devmodeArgs>
+                        <arg>-bindAddress</arg>
+                        <arg>localhost</arg>
+                    </devmodeArgs>
+                    <codeserverArgs>
+                        <arg>-bindAddress</arg>
+                        <arg>localhost</arg>
+                        <arg>-gen</arg>
+                        <arg>${project.build.directory}/.generated</arg>
+                    </codeserverArgs>
+                    <warDir>${project.build.directory}/${project.build.finalName}</warDir>
+                    <classpathScope>compile+runtime</classpathScope>
+                    <startupUrls>
+                        <startupUrl>index.html</startupUrl>
+                    </startupUrls>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>http://repo.maven.apache.org/maven2</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>central_1</id>
+            <name>Maven Repository Switchboard</name>
+            <url>http://repo1.maven.org/maven2</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+        <!-- EBI repo -->
+        <repository>
+            <id>nexus-ebi-repo</id>
+            <name>The EBI internal repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <!-- EBI SNAPSHOT repo -->
+        <repository>
+            <id>nexus-ebi-snapshot-repo</id>
+            <name>The EBI internal snapshot repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+</project>
