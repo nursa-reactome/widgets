@@ -1,3 +1,6 @@
+/* See the .list child style explanation below. */
+@external .com-google-gwt-user-cellview-client-CellList-Style-cellListOddItem;
+
 .main {
     background-color: rgba(250, 250, 250, 0.8);
     border: 1px none;
@@ -25,7 +28,25 @@
 }
 
 .list {
+	background-color: white;
 	margin-top: 4px;
+}
+
+/* Work around the following GWT style bug:
+   * GWT does not apply the conventional even/odd background shading to its
+     CellList as it applies to CellTable. Furthermore, GWT gets the class
+     names wrong in both CellList and CellTable, naming even rows "Odd"
+     and odd rows "Even".
+   The work-around is to replicate the CellTable alternate row shading.
+   Unfortunately, this entails importing the generated GWT CellList item
+   style name as an external style. Note that, as described above, GWT
+   applies the "OddItem" style to what would a CSS selector would deem an
+   even child element. Note that we can't use the standard CSS nth-child
+   even/odd selector either, since that is not supported by GWT without
+   more tinkering.
+   */
+.list .com-google-gwt-user-cellview-client-CellList-Style-cellListOddItem {
+	background: #f3f7fb;
 }
 
 .pager {
