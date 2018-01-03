@@ -168,7 +168,7 @@ public class SuggestionComboBox<C> implements IsWidget,
         /**
          * The path to the default CSS styles used by this resource.
          */
-        String CSS = "SuggestionComboBox.gss";
+        String CSS = "SuggestionComboBox.css";
 
         String main();
 

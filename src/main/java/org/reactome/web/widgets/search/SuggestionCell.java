@@ -76,7 +76,7 @@ public class SuggestionCell<C extends Suggestion> extends AbstractCell<C> {
     }
 
     private SafeHtml format(String text) {
-        String style = RESOURCES.getCSS().main();
+        String style = RESOURCES.getCSS().field();
         SafeHtml html = SafeHtmlUtils.fromTrustedString(text);
         if (text.length() < ELISION_LEN) {
             return templates.sansTooltip(style, html);
@@ -113,9 +113,11 @@ public class SuggestionCell<C extends Suggestion> extends AbstractCell<C> {
         /**
          * The path to the default CSS styles used by this resource.
          */
-        String CSS = "SuggestionCell.gss";
+        String CSS = "SuggestionCell.css";
 
         String main();
+
+        String field();
 
     }
 
