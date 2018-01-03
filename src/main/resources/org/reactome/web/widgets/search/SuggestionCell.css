@@ -1,4 +1,7 @@
 .main {
+}
+
+.field {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -6,6 +9,6 @@
     font-size: small;
 }
 
-.main + .main {
+.field + .field {
     font-size: x-small;
 }
