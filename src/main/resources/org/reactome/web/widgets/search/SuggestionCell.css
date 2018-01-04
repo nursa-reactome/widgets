@@ -1,6 +1,18 @@
 .main {
 }
 
+.main > img {
+    float: left;
+    margin: 4px 2px;
+}
+
+/* The odd idiom to align the div on the same line as the image is overflow hidden
+   (cf. https://stackoverflow.com/questions/7718761/placing-div-on-same-line-as-image).
+ */
+.main > div {
+    overflow: hidden;
+}
+
 .field {
     overflow: hidden;
     white-space: nowrap;
@@ -11,4 +23,5 @@
 
 .field + .field {
     font-size: x-small;
+    max-width: 39em;
 }
