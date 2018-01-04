@@ -8,6 +8,7 @@ import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.safehtml.shared.SafeUri;
 /**
  * The cell datum includes a required key and title. The title is
  * the primary text displayed in the suggestion cell. The title is
@@ -32,21 +33,42 @@ public class SuggestionCell<C extends Suggestion> extends AbstractCell<C> {
      * The HTML templates used to render the cell.
      */
     interface Templates extends SafeHtmlTemplates {
+        static final String IMAGE = "<img src=\"{0}\"></img>";
         static final String SANS_TOOLTIP = "<div class=\"{0}\">{1}</div>";
         static final String WITH_TOOLTIP = "<div class=\"{0}\" title=\"{1}\">{2}</div>";
+        static final String CELL = "<div class=\"{0}\">{1}<div>{2}</div></div>";
   
         /**
-         * The cell item template is a div whose title and content are the value.
-         * Since the html parameter type is {@link SafeHtml}, it will not be escaped
-         * before including it in the template.
+         * The cell text field template without a tooltip.
          * 
          * @return a {@link SafeHtml} instance
          */
         @Template(SANS_TOOLTIP)
         SafeHtml sansTooltip(String style, SafeHtml html);
 
+        /**
+         * The cell text field template with a tooltip.
+         * 
+         * @return a {@link SafeHtml} instance
+         */
         @Template(WITH_TOOLTIP)
         SafeHtml withTooltip(String style, String toolTip, SafeHtml html);
+
+        /**
+         * The cell image template.
+         * 
+         * @return a {@link SafeHtml} instance
+         */
+       @Template(IMAGE)
+        SafeHtml image(SafeUri url);
+
+       /**
+        * The cell template.
+        * 
+        * @return a {@link SafeHtml} instance
+        */
+        @Template(CELL)
+        SafeHtml cell(String style, SafeHtml image, SafeHtml text);
     }
 
     /**
@@ -62,17 +84,30 @@ public class SuggestionCell<C extends Suggestion> extends AbstractCell<C> {
         if (value == null) {
             return;
         }
+        SafeUri image = value.getImage();
+        SafeHtml imageHtml = null;
+        if (image != null) {
+            imageHtml = templates.image(image);
+        }
+        String style = RESOURCES.getCSS().main();
+        SafeHtml textHtml= formatTextFields(value);
+        sb.append(templates.cell(style, imageHtml, textHtml));
+    }
+
+    private SafeHtml formatTextFields(C value) {
         String title = value.getTitle();
         if (title == null || title.isEmpty()) {
             String msg = "The suggestion cell is missing a title";
             throw new IllegalArgumentException(msg);
         }
+        SafeHtmlBuilder sb = new SafeHtmlBuilder();
         SafeHtml html = format(title);
         sb.append(html);
         for (String secondary : value.getSecondary()) {
             html = format(secondary);
             sb.append(html);
         }
+        return sb.toSafeHtml();
     }
 
     private SafeHtml format(String text) {
