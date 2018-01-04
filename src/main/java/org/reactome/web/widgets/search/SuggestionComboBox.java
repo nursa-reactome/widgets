@@ -28,7 +28,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
  * 
  * @author Fred Loney <loneyf@ohsu.edu>
  */
-public class SuggestionComboBox<C> implements IsWidget,
+public class SuggestionComboBox<C extends Suggestion> implements IsWidget,
         SelectionChangeEvent.Handler {
     
     /**
@@ -137,7 +137,7 @@ public class SuggestionComboBox<C> implements IsWidget,
     @Override
     public void onSelectionChange(SelectionChangeEvent event) {
         Suggestion selection = selectionModel.getSelectedObject();
-        this.consumer.accept((C) selection.getKey());
+        this.consumer.accept((C) selection);
     }
 
     public static Resources RESOURCES;
