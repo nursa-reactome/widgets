@@ -1,5 +1,6 @@
 /* See the .list child style explanation below. */
 @external .com-google-gwt-user-cellview-client-CellList-Style-cellListOddItem;
+@external .com-google-gwt-user-cellview-client-CellList-Style-cellListSelectedItem;
 
 .main {
     background-color: rgba(250, 250, 250, 0.8);
@@ -46,7 +47,11 @@
    more tinkering.
    */
 .list .com-google-gwt-user-cellview-client-CellList-Style-cellListOddItem {
-	background: #f3f7fb;
+	background-color: #f3f7fb;
+}
+
+.list .com-google-gwt-user-cellview-client-CellList-Style-cellListOddItem.com-google-gwt-user-cellview-client-CellList-Style-cellListSelectedItem {
+    background-color: #628cd5;
 }
 
 .pager {
