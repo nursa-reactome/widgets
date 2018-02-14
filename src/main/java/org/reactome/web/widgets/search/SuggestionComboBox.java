@@ -95,11 +95,13 @@ public class SuggestionComboBox<C extends Suggestion> implements IsWidget,
         suggestions = new CellList<Suggestion>(suggestionCell, KEY_PROVIDER);
         suggestions.sinkEvents(Event.FOCUSEVENTS);
         suggestions.addStyleName(RESOURCES.getCSS().list());
-        suggestions.setKeyboardPagingPolicy(HasKeyboardPagingPolicy.KeyboardPagingPolicy.INCREASE_RANGE);
+        suggestions.setKeyboardPagingPolicy(
+                HasKeyboardPagingPolicy.KeyboardPagingPolicy.INCREASE_RANGE);
         selectionModel = new SingleSelectionModel<Suggestion>(KEY_PROVIDER);
         selectionModel.addSelectionChangeHandler(this);
         suggestions.setSelectionModel(selectionModel);
-        suggestions.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.DISABLED);
+        suggestions.setKeyboardSelectionPolicy(
+                HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.DISABLED);
 
         // The auto-complete search input text box.
         final SearchDataProvider dataProvider = new SearchDataProvider(searcher, pageSize);
@@ -109,6 +111,12 @@ public class SuggestionComboBox<C extends Suggestion> implements IsWidget,
             @Override
             public void accept(String term) {
                 dataProvider.setTerm(term);
+                // If an actionable term is cleared, then notify the combo box
+                // consumer.
+                if (term == null) {
+                    SuggestionComboBox.this.consumer.accept(null);
+                    SuggestionComboBox.this.selectionModel.clear();
+                }
             }
  
         };
