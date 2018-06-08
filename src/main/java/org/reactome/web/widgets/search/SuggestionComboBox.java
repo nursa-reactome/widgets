@@ -136,6 +136,10 @@ public class SuggestionComboBox<C extends Suggestion> implements IsWidget,
         widget = uiBinder.createAndBindUi(this);
     }
     
+    public void setFocus(boolean focused) {
+        input.setFocus(focused);
+    }
+    
     @Override
     public Widget asWidget() {
         return this.widget;
