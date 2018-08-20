@@ -149,7 +149,7 @@ public class SuggestionComboBox<C extends Suggestion> implements IsWidget,
     @Override
     public void onSelectionChange(SelectionChangeEvent event) {
         Suggestion selection = selectionModel.getSelectedObject();
-        this.consumer.accept((C) selection);
+        consumer.accept((C) selection);
     }
 
     public static Resources RESOURCES;
