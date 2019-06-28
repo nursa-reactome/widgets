@@ -3,12 +3,12 @@
     <tbody>
       <tr class="min-max-slider-input-row">
         <td>
-          <label>Min</label>
+          <label>Minimum</label>
           <input ui:field="min" type="number">
           </input>
         </td>
         <td>
-          <label>Max</label>
+          <label>Maximum</label>
           <input ui:field="max" type="number">
           </input>
         </td>
