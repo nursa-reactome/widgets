@@ -1,16 +1,9 @@
 .main {
+	align: left;
 }
 
 .main > img {
-    float: left;
     margin: 4px 2px;
-}
-
-/* The odd idiom to align the div on the same line as the image is overflow hidden
-   (cf. https://stackoverflow.com/questions/7718761/placing-div-on-same-line-as-image).
- */
-.main > div {
-    overflow: hidden;
 }
 
 .field {
@@ -19,6 +12,12 @@
     text-overflow: ellipsis;
     max-width: 30em;
     font-size: small;
+    /* Disable text selection, which can occur as a side-effect of a double-
+       or triple-click. */
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
 }
 
 .field + .field {
