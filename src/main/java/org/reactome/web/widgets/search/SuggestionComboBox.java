@@ -5,6 +5,9 @@ import java.util.function.Consumer;
 import org.reactome.web.widgets.paging.Pager;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -38,8 +41,6 @@ public class SuggestionComboBox<C extends Suggestion> implements IsWidget,
     }
     static final Binder uiBinder = GWT.create(Binder.class);
 
-    private static final int DEF_PAGE_SIZE = 4;
-
     /**
      * The search key accessor for fetching the item.
      */
@@ -70,16 +71,7 @@ public class SuggestionComboBox<C extends Suggestion> implements IsWidget,
 
     private DockLayoutPanel widget;
 
-    /**
-     * Creates the combo box with page size 4.
-     * 
-     * @param searcher the data supplier  
-     * @param consumer the suggestion selection consumer
-     * @return the combo box widget
-     */
-    public SuggestionComboBox(Searcher searcher, Consumer<C> consumer) {
-        this(searcher, consumer, DEF_PAGE_SIZE);
-    }
+    private Consumer<C> dblClickConsumer;
 
     /**
      * Creates the combo box.
@@ -93,7 +85,7 @@ public class SuggestionComboBox<C extends Suggestion> implements IsWidget,
         // The suggestions list.
         SuggestionCell<Suggestion> suggestionCell = new SuggestionCell<Suggestion>();
         suggestions = new CellList<Suggestion>(suggestionCell, KEY_PROVIDER);
-        suggestions.sinkEvents(Event.FOCUSEVENTS);
+        suggestions.sinkEvents(Event.FOCUSEVENTS | Event.ONCLICK | Event.ONDBLCLICK);
         suggestions.addStyleName(RESOURCES.getCSS().list());
         suggestions.setKeyboardPagingPolicy(
                 HasKeyboardPagingPolicy.KeyboardPagingPolicy.INCREASE_RANGE);
@@ -104,7 +96,7 @@ public class SuggestionComboBox<C extends Suggestion> implements IsWidget,
                 HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.DISABLED);
 
         // The auto-complete search input text box.
-        final SearchDataProvider dataProvider = new SearchDataProvider(searcher, pageSize);
+        SearchDataProvider dataProvider = new SearchDataProvider(searcher, pageSize);
         dataProvider.addDataDisplay(suggestions);
         Consumer<String> termConsumer = new Consumer<String>() {
 
@@ -134,12 +126,63 @@ public class SuggestionComboBox<C extends Suggestion> implements IsWidget,
         pager.addStyleName(RESOURCES.getCSS().pager());
         pager.setDisplay(suggestions);
         widget = uiBinder.createAndBindUi(this);
+        
+        // Double-click over an item selects that item and calls
+        // the optional double-cllick consumer, if necessary.
+        // Double-click outside of a visible item deselects the
+        // current selected item, if any.
+        DoubleClickHandler handler = new DoubleClickHandler() {
+            
+            @SuppressWarnings("unchecked")
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                int itemCnt = suggestions.getVisibleItemCount();
+                if (itemCnt > 0) {
+                    Element container = suggestions.getRowContainer();
+                    int y = event.getRelativeY(container);
+                    Element firstElt = suggestions.getRowElement(0);
+                    int height = firstElt.getOffsetHeight();
+                    int rowNdx = y / height;
+                    if (rowNdx < itemCnt) {
+                        Suggestion selItem = suggestions.getVisibleItem(rowNdx);
+                        selectionModel.setSelected(selItem, true);
+                        if (dblClickConsumer != null) {
+                            dblClickConsumer.accept((C) selItem);
+                        }
+                        return;
+                    }
+                }
+                Suggestion current = selectionModel.getSelectedObject();
+                if (current != null) {
+                    selectionModel.setSelected(current, false);
+                }
+            }
+ 
+        };
+        suggestions.addDomHandler(handler, DoubleClickEvent.getType());
+    }
+    
+    /**
+     * Adds a consumer for a double-click on a suggestion. The consumer
+     * {@link Consumer#accept(Object)} method is invoked if and only if
+     * a double-click action occurs on a visible suggestion. Other
+     * double-clicks in the suggestion list area deselect an existing
+     * selection, if an item is selected.
+     * 
+     * @param consumer
+     */
+    public void addDoubleClickConsumer(Consumer<C> consumer) {
+        dblClickConsumer = consumer;
     }
     
     public void setFocus(boolean focused) {
         input.setFocus(focused);
     }
     
+    public void setSuggestions(CellList<Suggestion> suggestions) {
+        this.suggestions = suggestions;
+    }
+
     @Override
     public Widget asWidget() {
         return this.widget;
