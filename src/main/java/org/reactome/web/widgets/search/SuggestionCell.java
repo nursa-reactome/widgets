@@ -20,7 +20,6 @@ import com.google.gwt.safehtml.shared.SafeUri;
  * @author Fred Loney <loneyf@ohsu.edu>
  */
 public class SuggestionCell<C extends Suggestion> extends AbstractCell<C> {
-    
     /**
      * The maximum suggestion item length before it is elided in the display.
      *
@@ -34,10 +33,17 @@ public class SuggestionCell<C extends Suggestion> extends AbstractCell<C> {
      */
     interface Templates extends SafeHtmlTemplates {
         static final String IMAGE = "<img src=\"{0}\"></img>";
+        
         static final String SANS_TOOLTIP = "<div class=\"{0}\">{1}</div>";
+        
         static final String WITH_TOOLTIP = "<div class=\"{0}\" title=\"{1}\">{2}</div>";
-        static final String CELL = "<div class=\"{0}\">{1}<div>{2}</div></div>";
-  
+        
+        // The suggestion cell layout is a horizontal table.
+        static final String CELL =
+                "<table class=\"{0}\"><tbody>" +
+                "<tr><td>{1}</td><td>{2}</td></tr>" +
+                "</tbody></table>";
+
         /**
          * The cell text field template without a tooltip.
          * 
@@ -59,7 +65,7 @@ public class SuggestionCell<C extends Suggestion> extends AbstractCell<C> {
          * 
          * @return a {@link SafeHtml} instance
          */
-       @Template(IMAGE)
+        @Template(IMAGE)
         SafeHtml image(SafeUri url);
 
        /**
@@ -69,6 +75,7 @@ public class SuggestionCell<C extends Suggestion> extends AbstractCell<C> {
         */
         @Template(CELL)
         SafeHtml cell(String style, SafeHtml image, SafeHtml text);
+
     }
 
     /**
