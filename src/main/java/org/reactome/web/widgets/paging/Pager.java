@@ -1,5 +1,6 @@
 package org.reactome.web.widgets.paging;
 
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.view.client.HasRows;
 import com.google.gwt.view.client.Range;
@@ -21,6 +22,11 @@ import com.google.gwt.view.client.Range;
  * from the penultimate page if necessary. Respecting the specified
  * page size arguably results in more intuitive and conventional
  * paging behaviour.
+ * 
+ * This implementation adapts the "last page" work-around of the
+ * PathwayBrowser
+ * <code>org.reactome.web.pwp.client.details.tabs.analysis.widgets.common.CustomPager</code>
+ * implementation.
  * 
  * @author Fred Loney <loneyf@ohsu.edu>
  */
@@ -191,6 +197,47 @@ public class Pager extends SimplePager {
             return false;
         }
         return (pages - 1) * getPageSize() < getPageStart();
+    }
+
+    /**
+     * Overrides {@link SimplePager} as follows:
+     * <ul>
+     * <li>Display "0 of 0" when there are no records (otherwise
+     *     you get "1-1 of 0")</li>
+     * <li>Display "1 of 1" when there is only one record
+     *     (otherwise you get "1-1 of 1").</li>
+     * <li>Display the correct number of items on the first page.</li>
+     * 
+     * This implementation extends the PathwayBrowser CustomPager
+     * implementation to display the correct number of items on
+     * the first page.
+     */
+    @Override
+    protected String createText() {
+        NumberFormat formatter = NumberFormat.getFormat("#,###");
+        HasRows display = getDisplay();
+        Range range = display.getVisibleRange();
+        int pageStart = range.getStart() + 1;
+        // Fix the following superclass bug:
+        // * The page size is intended to be the number of items
+        //   displayed. The range length is the number of rows
+        //   which could be filled by items in the display. The
+        //   intended page size is captured in the pageSize field.
+        //int pageSize = range.getLength();
+        int dataSize = display.getRowCount();
+        int endIndex = Math.min(dataSize, pageStart + pageSize - 1);
+        endIndex = Math.max(pageStart, endIndex);
+        boolean exact = display.isRowCountExact();
+        if (dataSize == 0) {
+            return "0 of 0";
+        }
+        String startStr = formatter.format(pageStart);
+        String totalStr = formatter.format(dataSize);
+        if ( pageStart == endIndex) {
+            return startStr + " of " + totalStr;
+        }
+        String rangeStr = startStr + "-" + formatter.format(endIndex);
+        return rangeStr + (exact ? " of " : " of over ") + totalStr;
     }
 
 }
